@@ -50,7 +50,13 @@ const CreateListingPage = () => {
             <h3>Which of these categories best describe your place?</h3>
             <div className="category-list">
               {categories?.map((item, index) => (
-                <div className="category" key={index}>
+                <div
+                  className={`category ${
+                    category === item.label ? 'selected' : ''
+                  }`}
+                  key={index}
+                  onClick={() => setCategory(item.label)}
+                >
                   <div className="category_icon">{item.icon}</div>
                   <p>{item.label}</p>
                 </div>
