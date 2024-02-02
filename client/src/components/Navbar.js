@@ -17,7 +17,7 @@ const Navbar = () => {
   const [dropDownMenu, setDropDownMenu] = useState(false);
 
   const user = useSelector((state) => state.user);
-  console.log(user);
+
   return (
     <div className="navbar">
       <Link to="/">

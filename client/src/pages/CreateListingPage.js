@@ -12,7 +12,42 @@ import { useState } from 'react';
 const CreateListingPage = () => {
   const [category, setCategory] = useState('');
   const [type, setType] = useState('');
+
+  /* FORM FOR LOCATION ADDRESS*/
+  const [formLocation, setFormLocation] = useState({
+    streetAddress: '',
+    aptSuite: '',
+    city: '',
+    country: '',
+    province: '',
+  });
+
+  const handleChangeLocation = (e) => {
+    const { name, value } = e.target;
+    setFormLocation({
+      ...formLocation,
+      [name]: value,
+    });
+  };
+
+  /* AMENITIES */
   const [amenities, setAmenities] = useState([]);
+
+  const handleSelectedFacilities = (facility) => {
+    if (amenities.includes(facility)) {
+      setAmenities((prevFacility) =>
+        prevFacility.filter((option) => option !== facility)
+      );
+    } else {
+      setAmenities((prev) => [...prev, facility]);
+    }
+  };
+
+  /* BASIC COUNTS */
+  const [guestCount, setGuestCount] = useState(1);
+  const [bedroomCount, setBedroomCount] = useState(1);
+  const [bedCount, setBedCount] = useState(1);
+  const [bathroomCount, setBathroomCount] = useState(1);
 
   //Drag, Drop, Upload, Remove Photos
   const [photos, setPhotos] = useState([]);
@@ -30,6 +65,26 @@ const CreateListingPage = () => {
     items.splice(result.destination.index, 0, recordedItem);
 
     setPhotos(items);
+  };
+
+  /* FORM DESCRIPTION */
+
+  const [formDescription, setFormDescription] = useState({
+    title: '',
+    description: '',
+    highlight: '',
+    highlightDesc: '',
+    price: '',
+  });
+
+  console.log(formDescription);
+
+  const handleChangeDescription = (e) => {
+    const { name, value } = e.target;
+    setFormDescription({
+      ...formDescription,
+      [name]: value,
+    });
   };
 
   const handleRemove = (indexToRemove) => {
@@ -65,7 +120,11 @@ const CreateListingPage = () => {
             <h3>What types of place will guests have?</h3>
             <div className="type-list">
               {types?.map((item, index) => (
-                <div key={index} className="type">
+                <div
+                  key={index}
+                  className={`type ${type === item.name ? 'selected' : ''}`}
+                  onClick={() => setType(item.name)}
+                >
                   <div className="type_text">
                     <h4>{item.name}</h4>
                     <p>{item.description}</p>
@@ -82,6 +141,8 @@ const CreateListingPage = () => {
                   type="text"
                   placeholder="Street Address"
                   name="streetAddress"
+                  value={formLocation.streetAddress}
+                  onChange={handleChangeLocation}
                   required
                 />
               </div>
@@ -93,12 +154,21 @@ const CreateListingPage = () => {
                   type="text"
                   placeholder="Apt, Suite, etc. (if applicablle)"
                   name="aptSuite"
+                  value={formLocation.aptSuite}
+                  onChange={handleChangeLocation}
                   required
                 />
               </div>
               <div className="location">
                 <p>City</p>
-                <input type="text" placeholder="City" name="city" required />
+                <input
+                  type="text"
+                  placeholder="City"
+                  name="city"
+                  value={formLocation.city}
+                  onChange={handleChangeLocation}
+                  required
+                />
               </div>
             </div>
             <div className="half">
@@ -108,6 +178,8 @@ const CreateListingPage = () => {
                   type="text"
                   placeholder="Province"
                   name="province"
+                  value={formLocation.province}
+                  onChange={handleChangeLocation}
                   required
                 />
               </div>
@@ -117,6 +189,8 @@ const CreateListingPage = () => {
                   type="text"
                   placeholder="Country"
                   name="country"
+                  value={formLocation.country}
+                  onChange={handleChangeLocation}
                   required
                 />
               </div>
@@ -127,14 +201,18 @@ const CreateListingPage = () => {
                 <p>Guests</p>
                 <div className="basic_count">
                   <RemoveCircleOutline
+                    onClick={() =>
+                      guestCount > 1 && setGuestCount(guestCount - 1)
+                    }
                     sx={{
                       fontSize: '25px',
                       cursor: 'pointer',
                       '&:hover': { color: variable.pinkred },
                     }}
                   />
-                  <p>1</p>
+                  <p>{guestCount}</p>
                   <AddCircleOutline
+                    onClick={() => setGuestCount(guestCount + 1)}
                     sx={{
                       fontSize: '25px',
                       cursor: 'pointer',
@@ -147,14 +225,18 @@ const CreateListingPage = () => {
                 <p>Bedrooms</p>
                 <div className="basic_count">
                   <RemoveCircleOutline
+                    onClick={() =>
+                      bedroomCount > 1 && setBedroomCount(bedroomCount - 1)
+                    }
                     sx={{
                       fontSize: '25px',
                       cursor: 'pointer',
                       '&:hover': { color: variable.pinkred },
                     }}
                   />
-                  <p>1</p>
+                  <p>{bedroomCount}</p>
                   <AddCircleOutline
+                    onClick={() => setBedroomCount(bedroomCount + 1)}
                     sx={{
                       fontSize: '25px',
                       cursor: 'pointer',
@@ -167,14 +249,16 @@ const CreateListingPage = () => {
                 <p>Beds</p>
                 <div className="basic_count">
                   <RemoveCircleOutline
+                    onClick={() => bedCount > 1 && setBedCount(bedCount - 1)}
                     sx={{
                       fontSize: '25px',
                       cursor: 'pointer',
                       '&:hover': { color: variable.pinkred },
                     }}
                   />
-                  <p>1</p>
+                  <p>{bedCount}</p>
                   <AddCircleOutline
+                    onClick={() => setBedCount(bedCount + 1)}
                     sx={{
                       fontSize: '25px',
                       cursor: 'pointer',
@@ -187,14 +271,18 @@ const CreateListingPage = () => {
                 <p>Bathrooms</p>
                 <div className="basic_count">
                   <RemoveCircleOutline
+                    onClick={() =>
+                      bathroomCount > 1 && setBathroomCount(bathroomCount - 1)
+                    }
                     sx={{
                       fontSize: '25px',
                       cursor: 'pointer',
                       '&:hover': { color: variable.pinkred },
                     }}
                   />
-                  <p>1</p>
+                  <p>{bathroomCount}</p>
                   <AddCircleOutline
+                    onClick={() => setBathroomCount(bathroomCount + 1)}
                     sx={{
                       fontSize: '25px',
                       cursor: 'pointer',
@@ -211,7 +299,13 @@ const CreateListingPage = () => {
             <h3>Tell guests what your place has to offer </h3>
             <div className="amenities">
               {facilities?.map((item, index) => (
-                <div className="facility" key={index}>
+                <div
+                  className={`facility ${
+                    amenities.includes(item) ? 'selected' : ''
+                  }`}
+                  key={index}
+                  onClick={() => handleSelectedFacilities(item)}
+                >
                   <div className="facility_icon">{item.icon}</div>
                   <p>{item.name}</p>
                 </div>
@@ -300,12 +394,21 @@ const CreateListingPage = () => {
             <h3>What makes your place attractive and exciting?</h3>
             <div className="description">
               <p>Title</p>
-              <input type="text" placeholder="Title" name="title" required />
+              <input
+                type="text"
+                placeholder="Title"
+                name="title"
+                value={formDescription.title}
+                onChange={handleChangeDescription}
+                required
+              />
               <p>Description</p>
               <textarea
                 type="text"
                 placeholder="Description"
                 name="description"
+                value={formDescription.description}
+                onChange={handleChangeDescription}
                 required
               />
               <p>Highlight</p>
@@ -313,13 +416,17 @@ const CreateListingPage = () => {
                 type="text"
                 placeholder="Highlight"
                 name="highlight"
+                value={formDescription.highlight}
+                onChange={handleChangeDescription}
                 required
               />
               <p>Highlight Details</p>
               <textarea
                 type="text"
                 placeholder="Highlight Details"
-                name="highlightDescription"
+                name="highlightDesc"
+                value={formDescription.highlightDesc}
+                onChange={handleChangeDescription}
                 required
               />
               <p>Now, Set your PRICE</p>
@@ -329,6 +436,8 @@ const CreateListingPage = () => {
                 placeholder="0"
                 name="price"
                 className="price"
+                value={formDescription.price}
+                onChange={handleChangeDescription}
                 required
               />
             </div>
