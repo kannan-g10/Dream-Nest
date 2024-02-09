@@ -13,7 +13,10 @@ function App() {
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/register" element={<RegisterPage />}></Route>
-          <Route path="/create-listing" element={<CreateListingPage />}></Route>
+          <Route
+            path="/create-listings"
+            element={<CreateListingPage />}
+          ></Route>
         </Routes>
       </BrowserRouter>
     </div>

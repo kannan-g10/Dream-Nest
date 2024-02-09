@@ -8,10 +8,14 @@ import variable from '../styles/Variables.scss';
 import Navbar from '../components/Navbar';
 import { categories, facilities, types } from '../data';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const CreateListingPage = () => {
   const [category, setCategory] = useState('');
   const [type, setType] = useState('');
+
+  const navigate = useNavigate();
 
   /* FORM FOR LOCATION ADDRESS*/
   const [formLocation, setFormLocation] = useState({
@@ -77,8 +81,6 @@ const CreateListingPage = () => {
     price: '',
   });
 
-  console.log(formDescription);
-
   const handleChangeDescription = (e) => {
     const { name, value } = e.target;
     setFormDescription({
@@ -93,12 +95,59 @@ const CreateListingPage = () => {
     );
   };
 
+  const creatorId = useSelector((state) => state.user._id);
+
+  const handlePost = async (e) => {
+    e.preventDefault();
+    try {
+      //CREATE FORM DATA TO HANDLE FILE UPLOAD
+      const listingForm = new FormData();
+
+      console.log(listingForm);
+
+      listingForm.append('creator', creatorId);
+      listingForm.append('category', category);
+      listingForm.append('type', type);
+      listingForm.append('streetAddress', formLocation.streetAddress);
+      listingForm.append('aptSuite', formLocation.aptSuite);
+      listingForm.append('city', formLocation.city);
+      listingForm.append('province', formLocation.province);
+      listingForm.append('country', formLocation.country);
+      listingForm.append('guestCount', guestCount);
+      listingForm.append('bedroomCount', bedroomCount);
+      listingForm.append('bedCount', bedCount);
+      listingForm.append('bathroomCount', bathroomCount);
+      listingForm.append('amenities', amenities);
+      listingForm.append('title', formDescription.title);
+      listingForm.append('description', formDescription.description);
+      listingForm.append('highlight', formDescription.highlight);
+      listingForm.append('highlightDesc', formDescription.highlightDesc);
+      listingForm.append('price', formDescription.price);
+
+      //Append each selected photo to the formdata object
+      photos.forEach((photo) => {
+        listingForm.append('listingPhotos', photo);
+      });
+
+      const response = await fetch('http://localhost:8000/properties/create', {
+        method: 'POST',
+        body: listingForm,
+      });
+
+      if (response.ok) {
+        navigate('/');
+      }
+    } catch (error) {
+      console.log('Publish listing failed', error.message);
+    }
+  };
+
   return (
     <>
       <Navbar />
       <div className="create-listing">
         <h1>Publish Your Place</h1>
-        <form>
+        <form onSubmit={handlePost}>
           <div className="create-listing_step1">
             <h2>Step 1: Tell us about your place</h2>
             <hr />
@@ -301,10 +350,10 @@ const CreateListingPage = () => {
               {facilities?.map((item, index) => (
                 <div
                   className={`facility ${
-                    amenities.includes(item) ? 'selected' : ''
+                    amenities.includes(item.name) ? 'selected' : ''
                   }`}
                   key={index}
-                  onClick={() => handleSelectedFacilities(item)}
+                  onClick={() => handleSelectedFacilities(item.name)}
                 >
                   <div className="facility_icon">{item.icon}</div>
                   <p>{item.name}</p>
@@ -442,6 +491,9 @@ const CreateListingPage = () => {
               />
             </div>
           </div>
+          <button className="submit_btn" type="submit">
+            CREATE YOUR LISTING
+          </button>
         </form>
       </div>
     </>

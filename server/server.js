@@ -5,6 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const authRoutes = require('./routes/auth');
+const listingRoutes = require('./routes/listing');
 
 const app = express();
 
@@ -18,6 +19,7 @@ const PORT = 8000;
 
 /* ROUTES */
 app.use('/auth', authRoutes);
+app.use('/properties', listingRoutes);
 
 // MONGODB SETUP
 mongoose
